@@ -1,6 +1,6 @@
 # inventory-api
 
-See the [docker-compose.yml](app/docker-compose.yml) file for more details.
+See the [docker-compose.yml](docker-compose.yml) file for more details.
 
 ## Tests
 
