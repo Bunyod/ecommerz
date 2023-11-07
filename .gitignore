@@ -1,0 +1,12 @@
+/.bsp/
+/.idea/
+/auth-service/target/
+/commons/target/
+/inventory-api/target/
+/organization/target/
+/project/target/
+/project/project/target/
+/target/
+/sales-api/target/
+/integration/target/
+/agent-api/target/

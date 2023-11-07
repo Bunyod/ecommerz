@@ -1,0 +1,570 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: Inventory API Auto Mocking
+    url: https://virtserver.swaggerhub.com/Bunyod/inventory-api/1.0.1
+info:
+  description: Inventory
+  version: "1.0.1"
+  title: Inventory API
+  contact:
+    email: bunyodreal@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  /auth/login:
+    post:
+      summary: login user
+      operationId: login
+      description: login user
+      requestBody:
+        content:
+          application:json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+      responses:
+        200:
+          description: a JSON Web Token (JWT) required to login.
+          content:
+            application/jwt:
+              schema:
+                type: string
+                example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+        403:
+          description: you don't have access rights
+  /auth/logout:
+    post:
+      summary: logout user
+      operationId: logout
+      description: logout user
+      requestBody:
+        content:
+          application/jwt:
+            schema:
+              type: string
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+      responses:
+        204:
+          description: user successfully logout
+  /auth/user/registration:
+    post:
+      summary: user registration
+      operationId: newUser
+      description: user registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        200:
+          description: confirmation code has been sent.
+          content:
+            text/plain:
+              schema:
+                type: string
+        403:
+          description: forbidden
+  /auth/user/remind:
+    post:
+      summary: restoring a forgotten password
+      operationId: remind
+      description: restoring a forgotten password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneNumber'
+      responses:
+        200:
+          description: a password recovery code has been sent
+          content:
+            text/plain:
+              schema:
+                type: string
+        400:
+          description: Couldn't find a user with this phone number
+        403:
+          description: Forbidden
+  /auth/verification:
+    post:
+      summary: confirmation of user registration
+      operationId: verify
+      description: confirmation of user registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Verification'
+      responses:
+        200:
+          description: confirmation code has been sent.
+          content:
+            text/plain:
+              schema:
+                type: string
+        403:
+          description: forbidden
+
+  /auth/{org_id}/user:
+    parameters:
+      - name: org_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: string of the organization to get
+    get:
+      summary: Fetch all users
+      operationId: fetchAllUsers
+      description: Fetching all users
+      responses:
+        200:
+          description: Users have been successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/User'
+        400:
+          description: bad input, bad object
+  /auth/{org_id}/user/{id}:
+    parameters:
+      - name: org_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: string of the organization to get
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: string of the user to get
+    get:
+      summary: Fetch a user by id
+      operationId: fetchUserById
+      description: Fetching one user by id
+      responses:
+        200:
+          description: User has been successfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: id is incorrect
+    put:
+      summary: update a user by id
+      operationId: updateUserById
+      description: Update one user by id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+        description: User to update
+      responses:
+        200:
+          description: User successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: id is incorrect
+    delete:
+      summary: delete a user by id
+      operationId: deleteUserById
+      description: delete a user by id
+      responses:
+        204:
+          description: user successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResult'
+
+  /inventory/{org_id}/category/{id}:
+    parameters:
+      - name: org_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: string of the organization to get
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: string of the category to get
+    get:
+      summary: Fetch one category by id
+      operationId: getById
+      description: By passing id of specific category, you can fetch the category
+      responses:
+        200:
+          description: search result matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        400:
+          description: bad input id
+    put:
+      summary: update one category by id
+      operationId: updateById
+      description: Update an item in the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+        description: Category item to update
+      responses:
+        200:
+          description: item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        400:
+          description: Bad category name
+    delete:
+      summary: delete a category by id
+      operationId: deleteById
+      description: Delete an item in the system
+      responses:
+        204:
+          description: item deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResult'
+        400:
+          description: bad category id
+  /inventory/{org_id}/category:
+    parameters:
+      - name: org_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: string of the organization to get
+    post:
+      summary: create new category
+      operationId: create
+      description: Create a new category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+        description: Category item to add
+      responses:
+        200:
+          description: category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        400:
+          description: bad input, bad object
+        409:
+          description: category already exists
+    get:
+      summary: Fetch paginated categories by params
+      operationId: getByParams
+      description: Fetch paginated categories by params
+      parameters:
+        - name: nameSearch
+          in: query
+          description: pass optional string to look up category
+          required: false
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: number of records to skip for pagination
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: offset
+          in: query
+          description: maximum number of records to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        200:
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        400:
+          description: bad input parameter
+components:
+  schemas:
+    LoginUser:
+      type: object
+      required:
+        - phone_number
+        - password
+      properties:
+        phone_number:
+          type: string
+          example: '+998991234567'
+        password:
+          type: string
+          example: 'aaAA11@#'
+    PhoneNumber:
+      type: object
+      required:
+        - phone_number
+      properties:
+        phone_number:
+          type: string
+          example: '+998991234567'
+    Verification:
+      type: object
+      required:
+        - phone_number
+        - verification_code
+      properties:
+        phone_number:
+          type: string
+          example: '+998991234567'
+        verification_code:
+          type: integer
+          example: '123456'
+    User:
+      type: object
+      required:
+        - id
+        - role
+        - username
+        - email
+        - phone_number
+        - firstname
+        - lastname
+        - profile_image_path
+        - birthdate
+        - status
+        - created_at
+        - update_at
+        - created_by
+        - updated_by
+      properties:
+        id:
+          type: string
+          format: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+          readOnly: true
+        role:
+          type: string
+          format: string
+          example: 'owner'
+        username:
+          type: string
+          example: 'simon'
+        email:
+          type: string
+          example: 'example@gmail.com'
+        phone_number:
+          type: string
+          example: '+998991234567'
+        first_name:
+          type: string
+          example: 'John'
+        last_name:
+          type: string
+          example: 'Smith'
+        profile_image_path:
+          type: string
+          format: url
+          example: https://eu-west1-aws.com/images/profile/d290f1ee-6c54-4b01-90e6-d701748f0851
+          readOnly: true
+        birthdate:
+          type: string
+          example: '2016-08-29'
+          readOnly: true
+        status:
+          type: string
+          example: Active
+          readOnly: true
+        created_at:
+          type: string
+          example: '2016-08-29T09:12:33.001Z'
+          readOnly: true
+        update_at:
+          type: string
+          example: '2016-08-29T09:12:33.001Z'
+          readOnly: true
+        created_by:
+          type: string
+          format: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+          readOnly: true
+        updated_by:
+          type: string
+          format: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+          readOnly: true
+    UserRequest:
+      type: object
+      required:
+        - org_id
+        - password
+        - phone_number
+      properties:
+        id:
+          type: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+        org_id:
+          type: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+        role:
+          type: string
+          format: string
+          example: 'owner'
+        username:
+          type: string
+          example: 'simon'
+        password:
+          type: string
+          example: 'aaAA11@#'
+        email:
+          type: string
+          example: 'example@gmail.com'
+        phone_number:
+          type: string
+          example: '+998991234567'
+        first_name:
+          type: string
+          example: 'John'
+        last_name:
+          type: string
+          example: 'Smith'
+        birthdate:
+          type: string
+          example: '2016-08-29'
+          readOnly: true
+    Role:
+      properties:
+        owner:
+          type: string
+          example: 'owner'
+        manager:
+          type: string
+          example: 'manager'
+        worker:
+          type: string
+          example: 'worker'
+    UserId:
+      properties:
+        id:
+          type: string
+          format: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+      required:
+        - id
+      type: object
+    Category:
+      type: object
+      required:
+        - id
+        - org_id
+        - name
+        - image_path
+        - language
+        - status
+        - created_at
+        - update_at
+        - created_by
+        - updated_by
+      properties:
+        id:
+          type: string
+          format: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+          readOnly: true
+        name:
+          type: string
+          example: 'Mobile Accessories'
+        image_path:
+          type: string
+          format: url
+          example:
+          readOnly: true
+        language:
+          type: string
+          example: uz | latin
+          readOnly: true
+        status:
+          type: string
+          example: Active
+          readOnly: true
+        created_at:
+          type: string
+          example: '2016-08-29T09:12:33.001Z'
+          readOnly: true
+        update_at:
+          type: string
+          example: '2016-08-29T09:12:33.001Z'
+          readOnly: true
+        created_by:
+          type: string
+          format: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+          readOnly: true
+        updated_by:
+          type: string
+          format: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+          readOnly: true
+    Status:
+      properties:
+        active:
+          type: string
+          example: 'Active'
+        inactive:
+          type: string
+          example: 'Inactive'
+      type: object
+    DeleteResult:
+      properties:
+        status:
+          type: string
+          example: 'Item successfully deleted'
+      required:
+        - status
+      type: object
+    UpdateResult:
+      properties:
+        status:
+          type: string
+          example: 'Item successfully updated'
+      required:
+        - status
+      type: object
+    CategoryId:
+      properties:
+        id:
+          type: string
+          format: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+      required:
+        - id
+      type: object

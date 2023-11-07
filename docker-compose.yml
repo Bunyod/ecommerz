@@ -1,0 +1,21 @@
+services:
+
+  postgres:
+    restart: always
+    image: postgres:13.0-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - DEBUG=false
+      - POSTGRES_DB=inventory
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./resources/tables.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    restart: always
+    image: redis:6.2.0
+    ports:
+      - "6379:6379"
+    environment:
+      - DEBUG=false
