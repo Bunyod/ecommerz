@@ -4,7 +4,7 @@ See the [docker-compose.yml](app/docker-compose.yml) file for more details.
 
 ## Tests
 
-To run Unit & Integration Tests:
+To run unit & integration tests:
 
 ```
 docker-compose up
@@ -12,7 +12,7 @@ sbt test
 docker-compose down
 ```
 
-To run the application using our Docker image, run the following command:
+To run the application using docker image, run the following command:
 
 ```
 docker-compose up -d
