@@ -13,7 +13,9 @@ lazy val root = (project in file("."))
     testFrameworks += new TestFramework("weaver.framework.CatsEffect")
   )
   .aggregate(inventory, `auth-service`, commons, organization, `sales-api`, integration)
-
+  .settings(
+    addCommandAlias("run", "sales-api/run")
+  )
 lazy val `auth-service` = (project in file("auth-service"))
   .settings(
     libraryDependencies ++= authDependencies,

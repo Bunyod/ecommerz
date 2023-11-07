@@ -4,18 +4,11 @@ See the [docker-compose.yml](app/docker-compose.yml) file for more details.
 
 ## Tests
 
-To run Unit Tests:
-
-```
-sbt test
-```
-
-To run Integration Tests we need to run both `PostgreSQL` and `Redis`:
-
+To run Unit & Integration Tests:
 
 ```
 docker-compose up
-sbt it:test
+sbt test
 docker-compose down
 ```
 
