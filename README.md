@@ -19,24 +19,11 @@ sbt it:test
 docker-compose down
 ```
 
-## Build Docker image
+To run the application using our Docker image, run the following command:
 
 ```
-sbt docker:publishLocal
-```
-
-Our image should now be built. We can check it by running the following command:
-
-```
-> docker images | grep inventory-api
-REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
-inventory-api                 latest              646501a87362        2 seconds ago       138MB
-```
-
-To run our application using our Docker image, run the following command:
-
-```
-docker-compose up
+docker-compose up -d
+sbt run
 ```
 
 ## Architecture
