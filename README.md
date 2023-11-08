@@ -1,4 +1,4 @@
-# inventory-api
+# E-COMMERZ
 
 See the [docker-compose.yml](docker-compose.yml) file for more details.
 
