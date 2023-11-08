@@ -22,7 +22,7 @@ class AuthService[F[_]: Async: GenRecoveryCode](
 
   def updatePassword(staffId: StaffId, role: StaffRole, request: PasswordUpdate): F[Unit] =
     repository.getPassword(staffId, role).flatMap { current =>
-      if (crypto.decrypt(current) == request.oldPassword.toDomain) {
+      if (current == crypto.encrypt(request.oldPassword.toDomain)) {
         repository.updatePassword(staffId, role, crypto.encrypt(request.newPassword.toDomain))
       } else {
         new Throwable("Invalid current password. Please check and try again.").raiseError[F, Unit]
